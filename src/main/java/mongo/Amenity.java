@@ -9,6 +9,9 @@ public class Amenity {
 
 	private String amenityType;
 	private String name;
+	private int level;
+	private String parent;
+	private String parentMessage;
 
 	//private String jobTitle;
 
@@ -23,7 +26,6 @@ public class Amenity {
 	private Object latitude;
 
 	public Amenity() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Amenity(BasicDBObject obj) {
@@ -36,6 +38,9 @@ public class Amenity {
 		this.longitude = locationList.get(0);
 		this.latitude = locationList.get(1);
 		this.rating = amenityObj.getString("rating");
+		this.level =0;
+		this.parentMessage="";
+		this.parent="";
 		
 //		this.jobTitle = jobObj.getString("jobTitle");
 //		
@@ -44,7 +49,30 @@ public class Amenity {
 //		this.formattedAddress = jobObj.getString("formattedAddress");
 //		this.skills = ((BasicDBList) jobObj.get("skills")).toArray(new String[0]);
 	}
-
+	public void setLevel(int level){
+		this.level=level;
+	}
+	
+	public void addParentMessage(String message){
+		this.parentMessage=this.parentMessage+message;
+	}
+	
+	public String getParentMessage(){
+		return parentMessage;
+	}
+	
+	public void setParent(String parent){
+		this.parent=parent;
+	}
+	
+	public String getParent(){
+		return parent;
+	}
+	
+	public int getLevel(){
+		return level;
+	}
+	
 	public String getAmenityType() {
 		return amenityType;
 	}

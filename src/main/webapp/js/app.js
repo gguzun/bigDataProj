@@ -137,15 +137,14 @@
 				navigator.geolocation.getCurrentPosition(function(position){
 					var longitude;
 			    	var latitude;
+			    	var matches;
 					var longitude_input = this.$('input[name=longitude]').val();
 					var latitude_input = this.$('input[name=latitude]').val();
 					var rating = this.$('select[name=rating]').val();
 					var rideDistance = this.$('input[name=rideDistance]').val();
 					var walkDistance = this.$('input[name=walkDistance]').val();
+					var matches_input = this.$('input[name=matches]').val();
 					
-					
-					console.log('rideDistance .. '+rideDistance);
-					console.log('walkDistance .. '+walkDistance);
 					console.log('rating .. '+rating);
 					
 					if (longitude_input.length>0 && latitude_input.length>0){
@@ -156,14 +155,30 @@
 					latitude = position.coords.latitude;
 					}
 					
+					if(matches_input.length>0){
+						matches=matches_input;
+					}else{
+						matches = 10; //Default to 10 matches
+					}
+					
+					if(!rideDistance>0){
+						rideDistance=50; //Default to 50KM
+					}
+					
+					if(!walkDistance>0){
+						walkDistance = 1; //Default to 1KM
+					}
+					
 			    	console.log('longitude .. '+longitude);
 			    	console.log('latitude .. '+latitude);
+					console.log('matches .. '+matches);
+					console.log('rideDistance .. '+rideDistance);
+					console.log('walkDistance .. '+walkDistance);
 					
-			    	
 			    	$("#jobSearchForm").unmask();
 			    	self.plotUserLocation(new google.maps.LatLng(latitude, longitude),map);
 			    	  
-			    	$.get("api/amenities/nightPlan/?longitude="+longitude+"&latitude="+latitude+"&rating="+rating+"&skills1="+skills1+"&skills2="+skills2+"&rideDistance="+rideDistance+"&walkDistance"+walkDistance, function (results){ 
+			    	$.get("api/amenities/nightPlan/?longitude="+longitude+"&latitude="+latitude+"&rating="+rating+"&skills1="+skills1+"&skills2="+skills2+"&rideDistance="+rideDistance+"&walkDistance="+walkDistance+"&matches="+matches, function (results){ 
 		                    $("#jobSearchForm").unmask();
 		                    self.renderResults(results,self,map);
 		             });
@@ -225,13 +240,23 @@
 			renderJob : function(result , map , infoWindow){
 			
 				console.log("latitude : " + result.latitude + " , longitude: " + result.longitude);
-				result.marker = new google.maps.Marker({
-					position: new google.maps.LatLng(result.latitude, result.longitude),
-					icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Push-Pin-1-Left-Pink-icon.png', 
-					animation: google.maps.Animation.DROP,
-					type: result.name,
-					html: this.jobInfo(result)
-				});
+				if(result.level==0){
+					result.marker = new google.maps.Marker({
+						position: new google.maps.LatLng(result.latitude, result.longitude),
+						icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Push-Pin-1-Left-Pink-icon.png', 
+						animation: google.maps.Animation.DROP,
+						type: result.name,
+						html: this.jobInfo(result)
+					});
+				}else{
+					result.marker = new google.maps.Marker({
+						position: new google.maps.LatLng(result.latitude, result.longitude),
+						icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Push-Pin-1-Left-Azure-icon.png', 
+						animation: google.maps.Animation.DROP,
+						type: result.name,
+						html: this.jobInfo(result)
+					});
+				}
 				
 				google.maps.event.addListener(result.marker, 'click', function() {
 					/*map.setZoom(16);*/
@@ -249,14 +274,24 @@
 			},
 			
 		 jobInfo : function(job) {
+			
 			var text = '';
+			
 			text += '<div class="job_info">';
 			
 			text += '<h3>' + job['name'] + '</h3>';
 			text += '<p>' + 'Amenity: ' + job['amenityType'] + '</p>';
 			text += '<p>' + 'Rating: ' + job['rating'] + '</p>';
 			//text += '<p>' + job['skills'] + '</p>';
-			text += '<p>' + 'Distance: ' + job['distance'] + ' KM</p>';
+			if(job.level>0){
+				text += '<p>' + 'Near to first destination: '+job['parentMessage'] + '</p>'
+				text += '<p>' + 'Closest first destination distance to: ' + job['parent'] + '</p>';
+				text += '<p>' + 'Closest distance is: ' + job['distance'] + ' KM</p>';
+				
+			}else{
+				text += '<p>' + 'As a second destination it is near to: '+job['parentMessage'] + '</p>'
+				text += '<p>' + 'Distance to starting point: ' + job['distance'] + ' KM</p>';
+			}
 			return text;
 		}
 			

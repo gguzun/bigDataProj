@@ -50,26 +50,26 @@ body {
 				<div class="controls">
 					<label for="skills1">First Destination</label>
 					<input type="text" id="skills1" name="skills1" class="input-large"
-						placeholder="First Destination"
+						placeholder="eg. library, restaurant, bar, etc"
 						required>
 				</div>
 				<div class="controls">
 					<label for="skills2">Second Destination</label>
 					<input type="text" id="skills2" name="skills2" class="input-large"
-						placeholder="Second Destination"
+						placeholder="eg. library, restaurant, bar, etc"
 						required>
 				</div>
 				
 				<div class="controls">
-					<label for="rideDistance">Ride Distance</label>
+					<label for="rideDistance">Ride Distance to first destination</label>
 					<input type="text" id="rideDistance" name="rideDistance" class="input-large"
-						placeholder="in km"
+						placeholder="in km (defaults to 50)"
 						>
 				</div>
 				<div class="controls">
 					<label for="walkDistance">Walk distance to second destination</label>
 					<input type="text" id="walkDistance" name="walkDistance" class="input-large"
-						placeholder="in km"
+						placeholder="in km (defaults to 1)"
 						>
 				</div>
 				<div class="controls">
@@ -88,12 +88,18 @@ body {
 				<div class="controls">
 					<label for="rating">Rating</label>
 					<select id="rating" name="rating" class="input-large">
+						<option value="0">any</option>
 						<option value="1">1 to 5</option>
 						<option value="2">2 to 5</option>
 						<option value="3">3 to 5</option>
 						<option value="4">4 to 5 </option>
 					</select>
 					
+				</div>
+				<div class="controls">
+					<label for="matches">Number of matches (Default:10)</label>
+					<input type="text" id="matches" name="matches" class="input-large"
+						placeholder="# of matches to search for">
 				</div>
 			</div>
 
